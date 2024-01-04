@@ -1,0 +1,27 @@
+body{
+    background-color: rgb(5, 107, 203);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.calculator{
+    background-color: rgb(60, 60, 60);
+    border: solid 1px black;
+    border-radius: 20px;
+    height: 70vh;
+    width: 100%;
+    max-width: 400px;
+}
+
+.display{
+    background-color: white;
+    color: #02ad10;
+    border: solid 1px black;
+    border-radius: 20px;
+    margin: 20px;
+    width: 90%;
+    height: 100px;
+}

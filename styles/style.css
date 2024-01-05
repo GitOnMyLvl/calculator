@@ -69,3 +69,19 @@ body {
     flex: 1 0 47%;
     aspect-ratio: 2 / 1;
 }
+
+.operator-button{
+    background-color: #fff264;
+}
+
+#clear {
+    background-color: #ff6464;
+}
+
+#delete {
+    background-color: #64beff;
+}
+
+#equals {
+    background-color: #02ad10;
+}

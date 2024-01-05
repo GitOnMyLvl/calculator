@@ -9,24 +9,20 @@ let result = 0;
 
 
 
-function add(a, b) {
-    return a + b;
-}
+function operate(operator, num1, num2) {
+    switch (operator) {
+        case '+':
+            return num1 + num2;
+        case '-':
+            return num1 - num2;
+        case '*':
+            return num1 * num2;
+        case '%':
+            return num1 / num2;
+        default:
+            break;
+    }
 
-function subtract(a, b) {
-    return a - b;
-}
-
-function multiply(a, b) {
-    return a * b;
-}
-
-function divide(a, b) {
-    return a / b;
-}
-
-function equals() {
-    return result;
 }
 
 numberButtons.forEach((button) => {
@@ -42,31 +38,25 @@ numberButtons.forEach((button) => {
 
 operatorButtons.forEach((button) => {
     button.addEventListener('click', (e) => {
-        currentOperation = e.target.textContent;
-        storedNumber = inputNumber;
+        if (currentOperation !== null) {
+            console.log('current operation is not null');
+            storedNumber = operate(currentOperation, storedNumber, inputNumber);
+            currentOperation = e.target.textContent;
+            console.log(storedNumber);
+        }else {
+            currentOperation = e.target.textContent;
+            storedNumber = inputNumber;
+        }
         inputNumber = 0;
         display.textContent = inputNumber;
     });
 });
 
 equalsButton.addEventListener('click', () => {
-    let temp = inputNumber;
-    switch (currentOperation) {
-        case '+':
-            result = add(storedNumber, inputNumber);
-            break;
-        case '-':
-            result = subtract(storedNumber, inputNumber);
-            break;
-        case '*':
-            result = multiply(storedNumber, inputNumber);
-            break;
-        case '%':
-            result = divide(storedNumber, inputNumber);
-            break;
-        default:
-            break;
+    if (currentOperation === null) {
+        return;
     }
+    result = operate(currentOperation, storedNumber, inputNumber);
     console.log(result);
     display.textContent = result;
     currentOperation = null;

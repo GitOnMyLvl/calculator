@@ -9,6 +9,8 @@ let currentOperation = null;
 let inputNumber = 0;
 let storedNumber = 0;
 let result = 0;
+let operatorSet = false;
+let alertIsShown = false;
 
 
 // Funnction to perform the operation
@@ -20,8 +22,8 @@ function operate(operator, num1, num2) {
             return num1 - num2;
         case '*':
             return num1 * num2;
-        case '%':
-            return (num1/num2) % 1 !== 0? parseFloat(num1 / num2).toFixed(2) : (num1 / num2);
+        case '%': //This operator is used to have the "old-school" calculator behaviour
+            return (num1 / num2) % 1 !== 0 ? parseFloat(num1 / num2).toFixed(2) : (num1 / num2);
         default:
             break;
     }
@@ -29,13 +31,36 @@ function operate(operator, num1, num2) {
 }
 
 // Function to check if the number is within the display length and alert the user if it is not
-const checkDisplayLength = (notification) => {
+const checkDisplayLength = (msg) => {
     if (display.textContent.length > maxDisplayLength) {
-        alert(notification);
+        alert(msg);
         display.textContent = display.textContent.slice(0, maxDisplayLength);
     }
 };
 
+window.alert = (msg, timeout = null) => {
+    if (alertIsShown) {
+        return;
+    }
+    alertIsShown = true;
+    const alert = document.createElement('div');
+    const alertButton = document.createElement('button');
+    alert.classList.add('alert');
+    alert.innerText = msg;
+    alertButton.innerText = 'OK';
+    alert.appendChild(alertButton);
+    alertButton.addEventListener('click', () => {
+        alert.remove();
+        alertIsShown = false;
+    });
+    if (timeout !== null) {
+        setTimeout(() => {
+            alert.remove();
+            alertIsShown = false;
+        }, Number(timeout));
+    }
+    document.body.appendChild(alert);
+};
 
 const clearDisplay = () => display.textContent = 0;
 
@@ -48,9 +73,17 @@ const clearCalc = () => {
     result = 0;
 };
 
+const clearAll = () => {
+    clearDisplay();
+    clearCalc();
+};
+
 //Event listeners for each number button
 numberButtons.forEach((button) => {
     button.addEventListener('click', (e) => {
+        if (result !== 0) {
+            clearAll();
+        }
         if (display.textContent == 0) {
             display.textContent = '';
         }
@@ -63,7 +96,10 @@ numberButtons.forEach((button) => {
 // Event listeners for each operator button
 operatorButtons.forEach((button) => {
     button.addEventListener('click', (e) => {
-        if (currentOperation !== null) {
+        if (operatorSet) {
+            currentOperation = e.target.textContent;
+        }
+        else if (currentOperation !== null) {
             storedNumber = operate(currentOperation, storedNumber, inputNumber);
             currentOperation = e.target.textContent;
         } else {
@@ -82,13 +118,12 @@ equalsButton.addEventListener('click', () => {
     result = operate(currentOperation, storedNumber, inputNumber);
     display.textContent = result;
     checkDisplayLength("Number to high. Only the first 9 digits will be displayed");
-    clearCalc();
+    operatorSet = false;
 });
 
 
 clearButton.addEventListener('click', () => {
-    clearDisplay();
-    clearCalc();
+    clearAll();
 });
 
 

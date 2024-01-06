@@ -4,6 +4,7 @@ const operatorButtons = document.querySelectorAll('.operator-button');
 const equalsButton = document.querySelector('#equals');
 const clearButton = document.querySelector('#clear');
 const deleteButton = document.querySelector('#delete');
+const maxDisplayLength = 9;
 let currentOperation = null;
 let inputNumber = 0;
 let storedNumber = 0;
@@ -20,14 +21,23 @@ function operate(operator, num1, num2) {
         case '*':
             return num1 * num2;
         case '%':
-            return num1 / num2;
+            return (num1/num2) % 1 !== 0? parseFloat(num1 / num2).toFixed(2) : (num1 / num2);
         default:
             break;
     }
 
 }
 
-const clearDisplay = () =>  display.textContent = 0;
+// Function to check if the number is within the display length and alert the user if it is not
+const checkDisplayLength = (notification) => {
+    if (display.textContent.length > maxDisplayLength) {
+        alert(notification);
+        display.textContent = display.textContent.slice(0, maxDisplayLength);
+    }
+};
+
+
+const clearDisplay = () => display.textContent = 0;
 
 
 // Function to clear the variables of the calculator
@@ -46,6 +56,7 @@ numberButtons.forEach((button) => {
         }
         display.textContent += e.target.textContent;
         inputNumber = Number(display.textContent);
+        checkDisplayLength("Maximum number length reached");
     });
 });
 
@@ -55,7 +66,7 @@ operatorButtons.forEach((button) => {
         if (currentOperation !== null) {
             storedNumber = operate(currentOperation, storedNumber, inputNumber);
             currentOperation = e.target.textContent;
-        }else {
+        } else {
             currentOperation = e.target.textContent;
             storedNumber = inputNumber;
         }
@@ -70,6 +81,7 @@ equalsButton.addEventListener('click', () => {
     }
     result = operate(currentOperation, storedNumber, inputNumber);
     display.textContent = result;
+    checkDisplayLength("Number to high. Only the first 9 digits will be displayed");
     clearCalc();
 });
 
@@ -82,7 +94,9 @@ clearButton.addEventListener('click', () => {
 
 deleteButton.addEventListener('click', () => {
     const currentInput = display.textContent;
-    display.textContent = currentInput.slice(0, -1);
-    inputNumber = Number(display.textContent);
-    display.textContent = inputNumber;
+    if (currentInput.length > 0) {
+        display.textContent = currentInput.slice(0, -1);
+        inputNumber = Number(display.textContent);
+        display.textContent = inputNumber;
+    }
 });
